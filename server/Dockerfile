@@ -7,6 +7,8 @@ ENV INFINISPAN_SERVER_HOME /opt/jboss/infinispan-server
 # Set the INFINISPAN_VERSION env variable
 ENV INFINISPAN_VERSION 8.2.8.Final
 
+ENV JGROUPS_VERSION 4.0.12.Final
+
 ENV MGMT_USER admin
 
 ENV MGMT_PASS admin
@@ -17,6 +19,10 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 # Server download location
 ENV DISTRIBUTION_URL https://repository.jboss.org/nexus/content/repositories/releases/org/infinispan/server/infinispan-server-build/$INFINISPAN_VERSION/infinispan-server-build-$INFINISPAN_VERSION.zip 
 
+ENV JGROUPS_URL https://repository.jboss.org/nexus/content/repositories/releases/org/jgroups/jgroups/$JGROUPS_VERSION/jgroups-$JGROUPS_VERSION.jar
+
+ENV JGROUPS_DIR $HOME/infinispan-server/modules/system/layers/base/org/jgroups/main
+
 # Download and extract the Infinispan Server
 USER root
 
@@ -26,6 +32,8 @@ RUN INFINISPAN_SHA=$(curl $DISTRIBUTION_URL.sha1); curl -o /tmp/server.zip $DIST
     && unzip -q /tmp/server.zip -d $HOME && mv $HOME/infinispan-server-* $HOME/infinispan-server && rm /tmp/server.zip \ 
     && chown -R 1000.0 /opt/jboss/infinispan-server/ \
     && chmod -R g+rw /opt/jboss/infinispan-server/ \
+    && curl -o $JGROUPS_DIR/jgroups-$JGROUPS_VERSION.jar $JGROUPS_URL \
+    && ln -s $JGROUPS_DIR/jgroups-$JGROUPS_VERSION.jar $JGROUPS_DIR/jgroups.jar \
     && find /opt/jboss/infinispan-server/ -type d -exec chmod g+x {} +
 
 USER 1000
@@ -33,6 +41,7 @@ USER 1000
 # Copy entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin
 COPY is_running.sh /usr/local/bin
+COPY module.xml $JGROUPS_DIR
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

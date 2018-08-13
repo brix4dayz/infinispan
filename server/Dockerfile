@@ -17,11 +17,13 @@ ENV MGMT_PASS admin
 ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 # Server download location
-ENV DISTRIBUTION_URL https://repository.jboss.org/nexus/content/repositories/releases/org/infinispan/server/infinispan-server-build/$INFINISPAN_VERSION/infinispan-server-build-$INFINISPAN_VERSION.zip 
+ENV DISTRIBUTION_URL https://repository.jboss.org/nexus/content/repositories/releases/org/infinispan/server/infinispan-server-build/$INFINISPAN_VERSION/infinispan-server-build-$INFINISPAN_VERSION.zip
 
-ENV JGROUPS_URL https://repository.jboss.org/nexus/content/repositories/releases/org/jgroups/jgroups/$JGROUPS_VERSION/jgroups-$JGROUPS_VERSION.jar
+ENV JGROUPS_JAR jgroups-${JGROUPS_VERSION}.jar
 
-ENV JGROUPS_DIR $HOME/infinispan-server/modules/system/layers/base/org/jgroups/main
+ENV JGROUPS_URL https://repository.jboss.org/nexus/content/repositories/releases/org/jgroups/jgroups/$JGROUPS_VERSION/$JGROUPS_JAR
+
+ENV JGROUPS_DIR $INFINISPAN_SERVER_HOME/modules/system/layers/base/org/jgroups/main
 
 # Download and extract the Infinispan Server
 USER root
@@ -29,11 +31,12 @@ USER root
 ENV HOME /opt/jboss/
 
 RUN INFINISPAN_SHA=$(curl $DISTRIBUTION_URL.sha1); curl -o /tmp/server.zip $DISTRIBUTION_URL && sha1sum /tmp/server.zip | grep $INFINISPAN_SHA \
-    && unzip -q /tmp/server.zip -d $HOME && mv $HOME/infinispan-server-* $HOME/infinispan-server && rm /tmp/server.zip \ 
-    && chown -R 1000.0 /opt/jboss/infinispan-server/ \
-    && chmod -R g+rw /opt/jboss/infinispan-server/ \
-    && curl -o $JGROUPS_DIR/jgroups-$JGROUPS_VERSION.jar $JGROUPS_URL \
-    && ln -s $JGROUPS_DIR/jgroups-$JGROUPS_VERSION.jar $JGROUPS_DIR/jgroups.jar \
+    && unzip -q /tmp/server.zip -d $HOME && mv $HOME/infinispan-server-* $INFINISPAN_SERVER_HOME && rm /tmp/server.zip \
+    && chown -R 1000.0 $INFINISPAN_SERVER_HOME \
+    && chmod -R g+rw $INFINISPAN_SERVER_HOME \
+    && mkdir -p $JGROUPS_DIR \
+    && curl -o $JGROUPS_DIR/$JGROUPS_JAR $JGROUPS_URL \
+    && ln -s $JGROUPS_DIR/$JGROUPS_JAR $JGROUPS_DIR/jgroups.jar \
     && find /opt/jboss/infinispan-server/ -type d -exec chmod g+x {} +
 
 USER 1000

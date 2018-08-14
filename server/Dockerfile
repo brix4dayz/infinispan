@@ -89,5 +89,5 @@ COPY modules/net/oauth/module.xml $OAUTH_DIR
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-# Expose Infinispan server  ports 
+# Expose Infinispan server ports
 EXPOSE 7600 8080 8181 9990 11211 11222 57600

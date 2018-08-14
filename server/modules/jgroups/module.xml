@@ -10,5 +10,6 @@
         <module name="javax.api"/>
         <module name="org.jgroups.extension"/>
         <module name="org.jboss.sasl" services="import" />
+        <module name="org.jgroups.kuberenetes"/>
     </dependencies>
 </module>

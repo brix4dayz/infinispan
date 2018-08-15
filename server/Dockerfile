@@ -6,9 +6,6 @@ ENV INFINISPAN_SERVER_HOME /opt/jboss/infinispan-server
 
 # Set the INFINISPAN_VERSION env variable
 ENV INFINISPAN_VERSION 8.2.8.Final
-ENV JGROUPS_VERSION 3.6.16.Final
-ENV JGROUPS_K8S_VERSION 0.9.3
-ENV OAUTH_VERSION 20100527
 
 ENV MGMT_USER admin
 
@@ -19,6 +16,10 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 # Server download location
 ENV DISTRIBUTION_URL https://repository.jboss.org/nexus/content/repositories/releases/org/infinispan/server/infinispan-server-build/$INFINISPAN_VERSION/infinispan-server-build-$INFINISPAN_VERSION.zip
+
+ENV JGROUPS_VERSION 3.6.16.Final
+ENV JGROUPS_K8S_VERSION 0.9.3
+ENV OAUTH_VERSION 20100527
 
 ENV JGROUPS_JAR jgroups-$JGROUPS_VERSION.jar
 ENV JGROUPS_K8S_JAR kubernetes-$JGROUPS_K8S_VERSION.jar
@@ -84,7 +85,7 @@ COPY modules/jgroups/module.xml $JGROUPS_DIR/main
 COPY modules/jgroups/kubernetes/module.xml $JGROUPS_K8S_DIR/main
 COPY modules/jgroups/kubernetes/common/module.xml $JGROUPS_K8S_COMMON_DIR
 COPY modules/jgroups/kubernetes/dns/module.xml $JGROUPS_K8S_DNS_DIR
-COPY modules/net/oauth/module.xml $OAUTH_DIR
+COPY modules/oauth $OAUTH_DIR
 
 
 ENTRYPOINT ["docker-entrypoint.sh"]

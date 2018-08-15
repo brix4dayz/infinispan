@@ -91,4 +91,4 @@ COPY modules/oauth $OAUTH_DIR
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 # Expose Infinispan server ports
-EXPOSE 7600 8080 8181 9990 11211 11222 57600
+EXPOSE 7600 8080 8181 9990 11211 11222 57600 8888
